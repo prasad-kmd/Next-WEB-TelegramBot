@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Calendar, FileText, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Calendar, FileText, Settings, LogOut, Share2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navItems = [
@@ -50,5 +50,3 @@ export default function Sidebar() {
     </div>
   );
 }
-
-import { Share2 } from 'lucide-react';
