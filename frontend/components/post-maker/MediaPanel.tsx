@@ -6,13 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Paperclip, RefreshCw, X } from 'lucide-react';
 import api from '@/lib/api';
-
-interface Media {
-  file_id: string;
-  file_type: string;
-  file_name?: string;
-  thumb_file_id?: string;
-}
+import { Media } from '@/types';
 
 interface Props {
   selectedMedia: Media | null;
@@ -39,7 +33,7 @@ export default function MediaPanel({ selectedMedia, onSelect }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium">Media Attachment</label>
-        <Button variant="ghost" size="sm" onClick={fetchPending} disabled={loading}>
+        <Button variant="ghost" size="sm" onClick={fetchPending} disabled={loading} type="button">
           <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
           <span className="ml-2">Poll Media</span>
         </Button>
@@ -50,7 +44,7 @@ export default function MediaPanel({ selectedMedia, onSelect }: Props) {
           <CardContent className="flex flex-col items-center justify-center py-6 text-center space-y-2">
             <Paperclip className="text-gray-400" />
             <div className="text-sm text-gray-600">
-              Forward a file to the bot and click "Poll Media"
+              Forward a file to the bot and click &quot;Poll Media&quot;
             </div>
           </CardContent>
         </Card>
@@ -63,7 +57,7 @@ export default function MediaPanel({ selectedMedia, onSelect }: Props) {
                 {selectedMedia.file_name || selectedMedia.file_id}
               </div>
             </div>
-            <Button variant="ghost" size="sm" onClick={() => onSelect(null)}>
+            <Button variant="ghost" size="sm" onClick={() => onSelect(null)} type="button">
               <X size={16} />
             </Button>
           </CardContent>
@@ -76,7 +70,7 @@ export default function MediaPanel({ selectedMedia, onSelect }: Props) {
             <div className="text-xs">
               <span className="font-bold">New Media Detected:</span> {pending.file_type}
             </div>
-            <Button size="sm" className="h-7" onClick={() => onSelect(pending)}>Attach</Button>
+            <Button size="sm" className="h-7" onClick={() => onSelect(pending)} type="button">Attach</Button>
           </CardContent>
         </Card>
       )}

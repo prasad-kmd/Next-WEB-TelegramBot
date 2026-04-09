@@ -9,10 +9,6 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = !!token || !!session;
   const isLoginPage = request.nextUrl.pathname.startsWith('/login');
 
-  // Order:
-  // 1. Check for NextAuth session
-  // 2. Check for custom tg_token JWT cookie ('token')
-
   if (!isAuthenticated && !isLoginPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }

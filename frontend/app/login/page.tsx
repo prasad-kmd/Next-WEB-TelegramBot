@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff, AlertTriangle } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { TelegramUser } from '@/types';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleTelegramAuth = async (user: any) => {
+  const handleTelegramAuth = async (user: TelegramUser) => {
     try {
       await api.post('/auth/telegram', user);
       router.push('/');
@@ -47,7 +48,7 @@ export default function LoginPage() {
       } else {
         router.push('/');
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);
@@ -129,6 +130,7 @@ export default function LoginPage() {
                     size="sm"
                     className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                     onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </Button>

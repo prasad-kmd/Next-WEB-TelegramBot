@@ -1,46 +1,53 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect, useCallback } from 'react';
 import PostEditor from '@/components/post-maker/PostEditor';
 import PostPreview from '@/components/post-maker/PostPreview';
 import MediaPanel from '@/components/post-maker/MediaPanel';
 import ButtonBuilder from '@/components/post-maker/ButtonBuilder';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Clock, Send, Save, Share2, Info } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Send, Save } from 'lucide-react';
 import { format } from 'date-fns';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { Media, InlineButton, Channel, PostTemplate } from '@/types';
 
 export default function Composer() {
   const [content, setContent] = useState('');
-  const [media, setMedia] = useState<any>(null);
-  const [buttons, setButtons] = useState<any[][]>([]);
-  const [channels, setChannels] = useState<any[]>([]);
+  const [media, setMedia] = useState<Media | null>(null);
+  const [buttons, setButtons] = useState<InlineButton[][]>([]);
+  const [channels, setChannels] = useState<Channel[]>([]);
   const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
   const [scheduledAt, setScheduledAt] = useState<Date | undefined>(new Date());
   const [silentSend, setSilentSend] = useState(false);
   const [pinMessage, setPinMessage] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const fetchChannels = useCallback(async () => {
+    try {
+      const res = await api.get('/api/channels');
+      setChannels(res.data);
+    } catch (err) {
+      console.error('Failed to fetch channels');
+    }
+  }, []);
+
   useEffect(() => {
-    api.get('/api/channels').then(res => setChannels(res.data)).catch(() => {});
+    fetchChannels();
 
     // Check for template load
     const savedTpl = localStorage.getItem('tpl_draft');
     if (savedTpl) {
       try {
-        const tpl = JSON.parse(savedTpl);
+        const tpl: PostTemplate = JSON.parse(savedTpl);
         setContent(tpl.message || '');
         setMedia(tpl.media || null);
         setButtons(tpl.replyMarkup?.inline_keyboard || []);
@@ -50,9 +57,11 @@ export default function Composer() {
         }
         toast.info(`Loaded template: ${tpl.name}`);
         localStorage.removeItem('tpl_draft');
-      } catch (e) {}
+      } catch (e) {
+        console.error('Failed to parse template');
+      }
     }
-  }, []);
+  }, [fetchChannels]);
 
   const handleSend = async (immediate = true) => {
     if (selectedChannels.length === 0) {
@@ -78,8 +87,9 @@ export default function Composer() {
         await api.post('/api/posts/schedule', payload);
         toast.success('Scheduled successfully!');
       }
-    } catch (err: any) {
-      toast.error(err.response?.data?.error || 'Action failed');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Action failed';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -177,7 +187,7 @@ export default function Composer() {
               <Label>Schedule</Label>
               <Popover>
                 <PopoverTrigger>
-                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                  <Button variant="outline" className="w-full justify-start text-left font-normal" type="button">
                     <CalendarIcon className="mr-2 h-4 w-4" />
                     {scheduledAt ? format(scheduledAt, 'PPP p') : <span>Pick a date</span>}
                   </Button>
@@ -189,14 +199,14 @@ export default function Composer() {
             </div>
 
             <div className="grid grid-cols-2 gap-2">
-              <Button className="w-full" onClick={() => handleSend(true)} disabled={loading}>
+              <Button className="w-full" onClick={() => handleSend(true)} disabled={loading} type="button">
                 <Send className="mr-2 h-4 w-4" /> Send Now
               </Button>
-              <Button variant="outline" className="w-full" onClick={() => handleSend(false)} disabled={loading}>
+              <Button variant="outline" className="w-full" onClick={() => handleSend(false)} disabled={loading} type="button">
                 <Clock className="mr-2 h-4 w-4" /> Schedule
               </Button>
             </div>
-            <Button variant="secondary" className="w-full" onClick={handleSaveTemplate}>
+            <Button variant="secondary" className="w-full" onClick={handleSaveTemplate} type="button">
               <Save className="mr-2 h-4 w-4" /> Save Template
             </Button>
           </CardContent>

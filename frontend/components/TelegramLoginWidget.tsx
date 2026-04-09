@@ -1,10 +1,11 @@
 'use strict';
 
 import React, { useEffect, useRef } from 'react';
+import { TelegramUser } from '@/types';
 
 interface Props {
   botUsername: string;
-  onAuth: (user: any) => void;
+  onAuth: (user: TelegramUser) => void;
   buttonSize?: 'large' | 'medium' | 'small';
   cornerRadius?: number;
   requestAccess?: string;
@@ -22,7 +23,8 @@ const TelegramLoginWidget: React.FC<Props> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    (window as any).onTelegramAuth = (user: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (window as any).onTelegramAuth = (user: TelegramUser) => {
       onAuth(user);
     };
 
@@ -38,13 +40,14 @@ const TelegramLoginWidget: React.FC<Props> = ({
     script.setAttribute('data-onauth', 'onTelegramAuth(user)');
     script.async = true;
 
-    if (containerRef.current) {
-      containerRef.current.appendChild(script);
+    const currentContainer = containerRef.current;
+    if (currentContainer) {
+      currentContainer.appendChild(script);
     }
 
     return () => {
-      if (containerRef.current) {
-        containerRef.current.innerHTML = '';
+      if (currentContainer) {
+        currentContainer.innerHTML = '';
       }
     };
   }, [botUsername, onAuth, buttonSize, cornerRadius, requestAccess, usePic]);

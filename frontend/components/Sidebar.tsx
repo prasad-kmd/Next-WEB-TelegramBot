@@ -13,16 +13,10 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
-  User,
-  ExternalLink
+  User
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger
-} from '@/components/ui/collapsible';
 import {
   Tooltip,
   TooltipContent,
@@ -31,7 +25,6 @@ import {
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
 } from "@/components/ui/avatar";
 import {
   HoverCard,
@@ -77,6 +70,7 @@ export default function Sidebar() {
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="hidden lg:flex"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
         </Button>

@@ -5,7 +5,7 @@ import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import Placeholder from '@tiptap/extension-placeholder';
-import { Bold, Italic, Underline as UnderlineIcon, Code, Link as LinkIcon, Quote, Trash2 } from 'lucide-react';
+import { Bold, Italic, Underline as UnderlineIcon, Code, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface Props {
@@ -29,6 +29,7 @@ export default function PostEditor({ content, onChange }: Props) {
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
     },
+    immediatelyRender: false,
   });
 
   if (!editor) return null;
@@ -48,6 +49,7 @@ export default function PostEditor({ content, onChange }: Props) {
           size="sm"
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={editor.isActive('bold') ? 'bg-gray-200' : ''}
+          type="button"
         >
           <Bold size={16} />
         </Button>
@@ -56,6 +58,7 @@ export default function PostEditor({ content, onChange }: Props) {
           size="sm"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={editor.isActive('italic') ? 'bg-gray-200' : ''}
+          type="button"
         >
           <Italic size={16} />
         </Button>
@@ -64,6 +67,7 @@ export default function PostEditor({ content, onChange }: Props) {
           size="sm"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={editor.isActive('underline') ? 'bg-gray-200' : ''}
+          type="button"
         >
           <UnderlineIcon size={16} />
         </Button>
@@ -72,6 +76,7 @@ export default function PostEditor({ content, onChange }: Props) {
           size="sm"
           onClick={() => editor.chain().focus().toggleCode().run()}
           className={editor.isActive('code') ? 'bg-gray-200' : ''}
+          type="button"
         >
           <Code size={16} />
         </Button>
@@ -80,6 +85,7 @@ export default function PostEditor({ content, onChange }: Props) {
           size="sm"
           onClick={setLink}
           className={editor.isActive('link') ? 'bg-gray-200' : ''}
+          type="button"
         >
           <LinkIcon size={16} />
         </Button>
