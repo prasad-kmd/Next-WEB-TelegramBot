@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 3.6%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 3.6%;
+
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 14.9%;
+    --secondary-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 0 0% 100%;
+
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.6%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 0 0% 3.6%;
+    --foreground: 0 0% 98.2%;
+
+    --card: 0 0% 10.2%;
+    --card-foreground: 0 0% 98.2%;
+
+    --primary: 0 0% 98.2%;
+    --primary-foreground: 0 0% 9%;
+
+    --secondary: 0 0% 89.8%;
+    --secondary-foreground: 0 0% 9%;
+
+    --destructive: 0 72.2% 50.6%;
+    --destructive-foreground: 0 0% 100%;
+
+    --muted: 0 0% 14.9%;
+    --muted-foreground: 0 0% 63.9%;
+
+    --accent: 217.2 91.2% 59.8%;
+    --accent-foreground: 0 0% 9%;
+
+    --border: 0 0% 14.9%;
+    --input: 0 0% 14.9%;
+    --ring: 0 0% 83.1%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* TipTap Editor Styles */
+.tiptap {
+  @apply prose prose-sm max-w-none;
+  @apply dark:prose-invert;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  @apply content-[''];
+  @apply pointer-events-none;
+  @apply float-left;
+  @apply text-muted-foreground;
+}
+
+/* Calendar & Time Picker */
+.react-calendar {
+  @apply w-full rounded-lg border border-border bg-card p-4;
+}
+
+.react-calendar button {
+  @apply rounded px-2 py-1 hover:bg-accent hover:text-accent-foreground;
+}
+
+.react-time-picker {
+  @apply w-full rounded-lg border border-input bg-background px-3 py-2;
+}
