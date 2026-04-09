@@ -1,0 +1,149 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import PostEditor from '@/components/post-maker/PostEditor';
+import PostPreview from '@/components/post-maker/PostPreview';
+import MediaPanel from '@/components/post-maker/MediaPanel';
+import ButtonBuilder from '@/components/post-maker/ButtonBuilder';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar as CalendarIcon, Clock, Send, Save, Share2 } from 'lucide-react';
+import { format } from 'date-fns';
+import api from '@/lib/api';
+
+export default function Composer() {
+  const [content, setContent] = useState('');
+  const [media, setMedia] = useState<any>(null);
+  const [buttons, setButtons] = useState<any[][]>([]);
+  const [channels, setChannels] = useState<any[]>([]);
+  const [selectedChannels, setSelectedChannels] = useState<string[]>([]);
+  const [scheduledAt, setScheduledAt] = useState<Date | undefined>(new Date());
+  const [silentSend, setSilentSend] = useState(false);
+  const [pinMessage, setPinMessage] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    api.get('/api/channels').then(res => setChannels(res.data)).catch(() => {});
+  }, []);
+
+  const handleSend = async (immediate = true) => {
+    if (selectedChannels.length === 0) return alert('Select at least one channel');
+    setLoading(true);
+    try {
+      const payload = {
+        targets: selectedChannels,
+        message: content,
+        media,
+        replyMarkup: buttons.length > 0 ? { inline_keyboard: buttons } : undefined,
+        silentSend,
+        pinMessage,
+        scheduledAt: immediate ? new Date() : scheduledAt,
+      };
+
+      if (immediate) {
+        await api.post('/api/posts/send', payload);
+        alert('Sent successfully!');
+      } else {
+        await api.post('/api/posts/schedule', payload);
+        alert('Scheduled successfully!');
+      }
+    } catch (err: any) {
+      alert(err.response?.data?.error || 'Action failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-10 gap-8">
+      <div className="lg:col-span-6 space-y-6">
+        <Card>
+          <CardContent className="pt-6 space-y-6">
+            <div className="space-y-2">
+              <Label>Target Channels</Label>
+              <div className="flex flex-wrap gap-2">
+                {channels.map(ch => (
+                  <Badge
+                    key={ch._id}
+                    variant={selectedChannels.includes(ch.channelId) ? 'default' : 'outline'}
+                    className="cursor-pointer"
+                    onClick={() => {
+                      setSelectedChannels(prev =>
+                        prev.includes(ch.channelId)
+                          ? prev.filter(id => id !== ch.channelId)
+                          : [...prev, ch.channelId]
+                      );
+                    }}
+                  >
+                    {ch.channelTitle}
+                  </Badge>
+                ))}
+                {channels.length === 0 && <span className="text-xs text-gray-500">No channels added yet. Go to Settings.</span>}
+              </div>
+            </div>
+
+            <PostEditor content={content} onChange={setContent} />
+
+            <MediaPanel selectedMedia={media} onSelect={setMedia} />
+
+            <ButtonBuilder rows={buttons} onChange={setButtons} />
+
+            <div className="flex flex-wrap gap-6 pt-4 border-t">
+              <div className="flex items-center space-x-2">
+                <Switch id="silent" checked={silentSend} onCheckedChange={setSilentSend} />
+                <Label htmlFor="silent">Silent</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch id="pin" checked={pinMessage} onCheckedChange={setPinMessage} />
+                <Label htmlFor="pin">Pin</Label>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="lg:col-span-4 space-y-6">
+        <PostPreview content={content} media={media} buttons={buttons} />
+
+        <Card>
+          <CardContent className="pt-6 space-y-4">
+            <div className="space-y-2">
+              <Label>Schedule</Label>
+              <Popover>
+                <PopoverTrigger>
+                  <Button variant="outline" className="w-full justify-start text-left font-normal">
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {scheduledAt ? format(scheduledAt, 'PPP p') : <span>Pick a date</span>}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar mode="single" selected={scheduledAt} onSelect={setScheduledAt} />
+                </PopoverContent>
+              </Popover>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <Button className="w-full" onClick={() => handleSend(true)} disabled={loading}>
+                <Send className="mr-2 h-4 w-4" /> Send Now
+              </Button>
+              <Button variant="outline" className="w-full" onClick={() => handleSend(false)} disabled={loading}>
+                <Clock className="mr-2 h-4 w-4" /> Schedule
+              </Button>
+            </div>
+            <Button variant="secondary" className="w-full">
+              <Save className="mr-2 h-4 w-4" /> Save Template
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  );
+}
