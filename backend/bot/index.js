@@ -3,6 +3,31 @@ const PendingMedia = require('../models/PendingMedia');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
+// Listen for confirm/deny callbacks from authLink
+bot.on('callback_query', async (ctx) => {
+  const data = ctx.callbackQuery.data;
+  const { TgLinkRequest } = require('../routes/authLink');
+
+  if (data.startsWith('tg_confirm:')) {
+    const code = data.split(':')[1];
+    const request = await TgLinkRequest.findOne({ code });
+    if (request && request.expiresAt > new Date()) {
+      request.confirmed = true;
+      request.answeredAt = new Date();
+      await request.save();
+      await ctx.answerCbQuery('✅ Confirmed! You can return to the app.');
+      await ctx.editMessageText('✅ Login Confirmed.');
+    } else {
+      await ctx.answerCbQuery('❌ Code expired or invalid.');
+    }
+  } else if (data.startsWith('tg_deny:')) {
+    const code = data.split(':')[1];
+    await TgLinkRequest.deleteOne({ code });
+    await ctx.answerCbQuery('❌ Request denied.');
+    await ctx.editMessageText('❌ Login Denied.');
+  }
+});
+
 bot.on('message', async (ctx, next) => {
   const message = ctx.message;
   let fileData = null;

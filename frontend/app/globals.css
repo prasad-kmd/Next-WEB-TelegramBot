@@ -126,3 +126,24 @@
     @apply font-sans;
   }
 }
+
+/* Custom Focus Ring */
+*:focus-visible {
+  @apply ring-2 ring-blue-500 ring-offset-2 outline-none;
+}
+
+/* Page Transitions */
+.page-fade-enter {
+  opacity: 0;
+}
+.page-fade-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+.page-fade-exit {
+  opacity: 1;
+}
+.page-fade-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}

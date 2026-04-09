@@ -1,14 +1,23 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { getToken } from "next-auth/jwt";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token');
+  const session = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
 
-  if (!token && !request.nextUrl.pathname.startsWith('/login')) {
+  const isAuthenticated = !!token || !!session;
+  const isLoginPage = request.nextUrl.pathname.startsWith('/login');
+
+  // Order:
+  // 1. Check for NextAuth session
+  // 2. Check for custom tg_token JWT cookie ('token')
+
+  if (!isAuthenticated && !isLoginPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (token && request.nextUrl.pathname.startsWith('/login')) {
+  if (isAuthenticated && isLoginPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 

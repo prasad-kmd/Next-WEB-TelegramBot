@@ -15,9 +15,12 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar as CalendarIcon, Clock, Send, Save, Share2 } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Send, Save, Share2, Info } from 'lucide-react';
 import { format } from 'date-fns';
 import api from '@/lib/api';
+import { toast } from 'sonner';
+import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 export default function Composer() {
   const [content, setContent] = useState('');
@@ -32,10 +35,30 @@ export default function Composer() {
 
   useEffect(() => {
     api.get('/api/channels').then(res => setChannels(res.data)).catch(() => {});
+
+    // Check for template load
+    const savedTpl = localStorage.getItem('tpl_draft');
+    if (savedTpl) {
+      try {
+        const tpl = JSON.parse(savedTpl);
+        setContent(tpl.message || '');
+        setMedia(tpl.media || null);
+        setButtons(tpl.replyMarkup?.inline_keyboard || []);
+        if (tpl.settings) {
+          setSilentSend(tpl.settings.silentSend || false);
+          setPinMessage(tpl.settings.pinMessage || false);
+        }
+        toast.info(`Loaded template: ${tpl.name}`);
+        localStorage.removeItem('tpl_draft');
+      } catch (e) {}
+    }
   }, []);
 
   const handleSend = async (immediate = true) => {
-    if (selectedChannels.length === 0) return alert('Select at least one channel');
+    if (selectedChannels.length === 0) {
+      toast.error('Select at least one channel');
+      return;
+    }
     setLoading(true);
     try {
       const payload = {
@@ -50,15 +73,33 @@ export default function Composer() {
 
       if (immediate) {
         await api.post('/api/posts/send', payload);
-        alert('Sent successfully!');
+        toast.success('Sent successfully!');
       } else {
         await api.post('/api/posts/schedule', payload);
-        alert('Scheduled successfully!');
+        toast.success('Scheduled successfully!');
       }
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Action failed');
+      toast.error(err.response?.data?.error || 'Action failed');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSaveTemplate = async () => {
+    const name = window.prompt('Enter template name');
+    if (!name) return;
+
+    try {
+      await api.post('/api/templates', {
+        name,
+        message: content,
+        replyMarkup: buttons.length > 0 ? { inline_keyboard: buttons } : undefined,
+        media,
+        settings: { silentSend, pinMessage }
+      });
+      toast.success('Template saved!');
+    } catch (err) {
+      toast.error('Failed to save template');
     }
   };
 
@@ -90,7 +131,24 @@ export default function Composer() {
               </div>
             </div>
 
-            <PostEditor content={content} onChange={setContent} />
+            <div className="space-y-1">
+              <PostEditor content={content} onChange={setContent} />
+              <div className="flex items-center gap-2 px-1">
+                <Progress
+                  value={(content.length / 4096) * 100}
+                  className={cn(
+                    "h-1.5 flex-1",
+                    content.length > 3800 ? "[&>div]:bg-red-500" : content.length > 3200 ? "[&>div]:bg-amber-500" : ""
+                  )}
+                />
+                <span className={cn(
+                  "text-[10px] font-mono",
+                  content.length > 4096 ? "text-red-500 font-bold" : "text-gray-400"
+                )}>
+                  {content.length}/4096
+                </span>
+              </div>
+            </div>
 
             <MediaPanel selectedMedia={media} onSelect={setMedia} />
 
@@ -138,7 +196,7 @@ export default function Composer() {
                 <Clock className="mr-2 h-4 w-4" /> Schedule
               </Button>
             </div>
-            <Button variant="secondary" className="w-full">
+            <Button variant="secondary" className="w-full" onClick={handleSaveTemplate}>
               <Save className="mr-2 h-4 w-4" /> Save Template
             </Button>
           </CardContent>
