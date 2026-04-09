@@ -6,15 +6,15 @@ or schedule them via a Telegram bot. Run entirely on free-tier services.
 
 ## STACK
 
-Frontend: Next.js 14 (App Router) + Tailwind CSS + shadcn/ui — deploy on Vercel
-Backend: Node.js + Express — deploy on Railway (free tier)
-Bot library: telegraf
-Scheduler: node-cron
-Database: MongoDB Atlas (free 512MB tier) with Mongoose
-  → Fallback option: Supabase (free 500MB PostgreSQL tier) with Prisma
-File handling: NEVER upload files to the backend or store them anywhere.
-  All media is referenced by Telegram file_id only (see Media section).
-Auth: Telegram Login Widget (official) + AUTH_USERS env whitelist
+- Frontend: Next.js 16 (App Router/ no `src` dir.) + Tailwind CSS + shadcn/ui — deploy on Vercel
+- Backend: Node.js + Express — deploy on Railway (free tier)
+- Bot library: telegraf
+- Scheduler: node-cron
+- Database: MongoDB Atlas (free 512MB tier) with Mongoose
+  - → Fallback option: Supabase (free 500MB PostgreSQL tier) with Prisma
+- File handling: NEVER upload files to the backend or store them anywhere.
+  -All media is referenced by Telegram file_id only (see Media section).
+- Auth: Telegram Login Widget (official) + AUTH_USERS env whitelist
 
 ---
 
