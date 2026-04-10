@@ -7,6 +7,7 @@ const bot = require('./bot');
 const initScheduler = require('./scheduler');
 
 const authRoutes = require('./routes/auth');
+const authLinkRoutes = require('./routes/authLink');
 const mediaRoutes = require('./routes/media');
 const postsRoutes = require('./routes/posts').router;
 const channelsRoutes = require('./routes/channels');
@@ -30,6 +31,7 @@ mongoose.connect(process.env.MONGODB_URI)
 
 // Routes
 app.use('/auth', authRoutes);
+app.use('/api/auth', authLinkRoutes);
 app.use('/api/media', mediaRoutes);
 app.use('/api/posts', postsRoutes);
 app.use('/api/channels', channelsRoutes);
