@@ -1,0 +1,100 @@
+@font-face {
+    font-family: 'Space Mono';
+    src: local('Space Mono Regular'), local('SpaceMono-Regular'),
+        url('SpaceMono-Regular.woff2') format('woff2'),
+        url('SpaceMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Serif Sinhala';
+    src: local('Noto Serif Sinhala Regular'), local('NotoSerifSinhala-Regular'),
+        url('NotoSerifSinhala-Regular.woff2') format('woff2'),
+        url('NotoSerifSinhala-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: local('Roboto Regular'), local('Roboto-Regular'),
+        url('Roboto-Regular.woff2') format('woff2'),
+        url('Roboto-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: local('Inter Regular'), local('Inter-Regular'),
+        url('Inter-Regular.woff2') format('woff2'),
+        url('Inter-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Google Sans';
+    src: local('Google Sans Regular'), local('GoogleSans-Regular'),
+        url('GoogleSans-Regular.woff2') format('woff2'),
+        url('GoogleSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    src: local('JetBrains Mono Regular'), local('JetBrainsMono-Regular'),
+        url('JetBrainsMono-Regular.woff2') format('woff2'),
+        url('JetBrainsMono-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mozilla Headline';
+    src: local('Mozilla Headline ExtraLight'), local('MozillaHeadline-ExtraLight'),
+        url('MozillaHeadline-ExtraLight.woff2') format('woff2'),
+        url('MozillaHeadline-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Mozilla Text';
+    src: local('Mozilla Text ExtraLight'), local('MozillaText-ExtraLight'),
+        url('MozillaText-ExtraLight.woff2') format('woff2'),
+        url('MozillaText-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans';
+    src: local('Noto Sans Regular'), local('NotoSans-Regular'),
+        url('NotoSans-Regular.woff2') format('woff2'),
+        url('NotoSans-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Noto Sans Display';
+    src: local('Noto Sans Display Regular'), local('NotoSansDisplay-Regular'),
+        url('NotoSansDisplay-Regular.woff2') format('woff2'),
+        url('NotoSansDisplay-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
