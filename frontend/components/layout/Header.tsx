@@ -22,11 +22,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { LogOut, User, Link as LinkIcon } from 'lucide-react';
+import { LogOut, User, Link as LinkIcon, Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import api from '@/lib/api';
+import { ThemeToggle } from './ThemeToggle';
 
-export default function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export default function Header({ onMenuClick }: HeaderProps) {
   const { data: session } = useSession();
   const pathname = usePathname();
   const [tgInfo, setTgInfo] = useState<{username?: string} | null>(null);
@@ -62,8 +67,17 @@ export default function Header() {
   const breadcrumbs = getBreadcrumbs();
 
   return (
-    <header className="flex h-16 items-center justify-between border-b bg-card px-8">
+    <header className="flex h-16 items-center justify-between border-b bg-card px-4 md:px-8">
       <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onMenuClick}
+          className="md:hidden"
+          aria-label="Toggle menu"
+        >
+          <Menu size={20} />
+        </Button>
         <Breadcrumb>
           <BreadcrumbList>
             {breadcrumbs.map((bc, i) => (
@@ -82,10 +96,10 @@ export default function Header() {
         </Breadcrumb>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <Tooltip>
           <TooltipTrigger >
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <div className={cn(
                 "h-2 w-2 rounded-full",
                 botInfo.connected ? "bg-green-500" : "bg-red-500"
@@ -98,12 +112,14 @@ export default function Header() {
           </TooltipContent>
         </Tooltip>
 
+        <ThemeToggle />
+
         <HoverCard >
           <HoverCardTrigger >
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="" alt={session?.user?.name || "User"} />
-                <AvatarFallback className="bg-blue-100 text-blue-700">
+                <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
                   {session?.user?.name?.charAt(0) || <User size={16} />}
                 </AvatarFallback>
               </Avatar>
@@ -112,7 +128,7 @@ export default function Header() {
           <HoverCardContent className="w-80" align="end">
             <div className="flex justify-between space-x-4">
               <Avatar>
-                <AvatarFallback className="bg-blue-100 text-blue-700">
+                <AvatarFallback className="bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
                   {session?.user?.name?.charAt(0) || <User size={20} />}
                 </AvatarFallback>
               </Avatar>
@@ -120,7 +136,7 @@ export default function Header() {
                 <h4 className="text-sm font-semibold">{session?.user?.name || "User"}</h4>
                 <p className="text-xs text-muted-foreground">{session?.user?.email}</p>
                 {tgInfo?.username && (
-                  <div className="flex items-center gap-1 pt-2 text-xs text-blue-600">
+                  <div className="flex items-center gap-1 pt-2 text-xs text-blue-600 dark:text-blue-400">
                     <LinkIcon size={12} />
                     <span>Linked: @{tgInfo.username}</span>
                   </div>
@@ -129,7 +145,7 @@ export default function Header() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="w-full text-red-600"
+                    className="w-full text-red-600 dark:text-red-400"
                     onClick={() => session ? signOut({ callbackUrl: '/login' }) : (window.location.href = '/login')}
                   >
                     <LogOut size={14} className="mr-2" />

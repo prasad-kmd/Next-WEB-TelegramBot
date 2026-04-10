@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/tooltip';
 import { signOut, useSession } from 'next-auth/react';
 import api from '@/lib/api';
+import Image from 'next/image';
 
 const navItems = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -31,7 +32,11 @@ const navItems = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  className?: string;
+}
+
+export default function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { data: session } = useSession();
@@ -48,8 +53,9 @@ export default function Sidebar() {
   return (
     <aside
       className={cn(
-        "relative flex flex-col border-r bg-card transition-all duration-300 ease-in-out",
-        isCollapsed ? "w-16" : "w-64"
+        "relative flex h-full flex-col border-r bg-card transition-all duration-300 ease-in-out",
+        isCollapsed ? "w-16" : "w-64",
+        className
       )}
     >
       <div className={cn(
@@ -57,23 +63,30 @@ export default function Sidebar() {
         isCollapsed ? "justify-center" : "justify-between"
       )}>
         {!isCollapsed && (
-          <div className="flex items-center gap-2 font-bold text-blue-600">
-            <Share2 size={24} />
-            <span className="truncate">PostMaker</span>
+          <div className="flex items-center gap-2 font-bold text-blue-600 dark:text-blue-400">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 dark:bg-blue-500">
+              <Image
+                src="/images/favicon/TG-post-bot-prasadm-32.webp"
+                alt="Logo"
+                width={20}
+                height={20}
+              />
+            </div>
+            <span className="truncate font-heading">PostMaker</span>
           </div>
         )}
         <Button
           variant="ghost"
           size="icon"
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="h-8 w-8"
+          className="h-8 w-8 hidden md:flex"
           aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           {isCollapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
         </Button>
       </div>
 
-      <nav className="flex-1 space-y-1 p-2">
+      <nav className="flex-1 space-y-1 p-2 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = pathname === item.href;
@@ -89,7 +102,7 @@ export default function Sidebar() {
               )}
             >
               <Icon size={18} className="shrink-0" />
-              {!isCollapsed && <span>{item.name}</span>}
+              {!isCollapsed && <span className="font-body">{item.name}</span>}
             </Link>
           );
 
@@ -110,7 +123,7 @@ export default function Sidebar() {
         })}
       </nav>
 
-      <div className="border-t p-2">
+      <div className="border-t p-2 mt-auto">
         {isCollapsed ? (
           <Tooltip >
             <TooltipTrigger >
@@ -118,7 +131,7 @@ export default function Sidebar() {
                 variant="ghost"
                 size="icon"
                 onClick={handleLogout}
-                className="w-full text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20"
+                className="w-full text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20 dark:text-red-400"
                 aria-label="Logout"
               >
                 <LogOut size={18} />
@@ -131,11 +144,11 @@ export default function Sidebar() {
         ) : (
           <Button
             variant="ghost"
-            className="w-full justify-start gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20"
+            className="w-full justify-start gap-3 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20 dark:text-red-400"
             onClick={handleLogout}
           >
             <LogOut size={18} />
-            Logout
+            <span className="font-body">Logout</span>
           </Button>
         )}
       </div>
