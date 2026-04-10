@@ -16,9 +16,9 @@ export default function Home() {
           <div className="mx-auto max-w-6xl">
             <TelegramLinkBanner />
             <OnboardingChecklist />
-            <div className="mb-8">
-              <h1 className="text-3xl font-bold tracking-tight">Create Post</h1>
-              <p className="text-muted-foreground">Compose and schedule your Telegram content</p>
+            <div className="mb-8 font-sans">
+              <h1 className="text-3xl font-mozilla-headline font-bold tracking-tight">Create Post</h1>
+              <p className="text-muted-foreground font-mozilla-text">Compose and schedule your Telegram content</p>
             </div>
             <Composer />
           </div>

@@ -57,8 +57,8 @@ export default function Sidebar() {
         isCollapsed ? "justify-center" : "justify-between"
       )}>
         {!isCollapsed && (
-          <div className="flex items-center gap-2 font-bold text-blue-600">
-            <Share2 size={24} />
+          <div className="flex items-center gap-2 font-mozilla-headline font-bold text-primary">
+            <img src="/images/favicon/TG-post-bot-prasadm-32.png" alt="Logo" className="h-6 w-6" />
             <span className="truncate">PostMaker</span>
           </div>
         )}

@@ -41,8 +41,9 @@ export default function Header() {
   }, [session]);
 
   useEffect(() => {
-    // Mocking bot status or could be an actual endpoint
-    setBotInfo({ username: 'PostMakerBot', connected: true });
+    api.get('/bot-info')
+      .then(res => setBotInfo(res.data))
+      .catch(() => setBotInfo({ connected: false }));
   }, []);
 
   const getBreadcrumbs = () => {

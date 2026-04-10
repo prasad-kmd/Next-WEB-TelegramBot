@@ -16,7 +16,10 @@ export async function middleware(request: NextRequest) {
 
   const isAuthenticated = !!nextAuthToken || !!tgToken;
 
-  if (!isAuthenticated && !path.startsWith('/login')) {
+  const publicPaths = ['/login', '/privacy', '/disclaimer', '/terms', '/about', '/contact'];
+  const isPublicPath = publicPaths.some(p => path.startsWith(p));
+
+  if (!isAuthenticated && !isPublicPath) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 

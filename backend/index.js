@@ -37,6 +37,20 @@ app.use('/api/posts', postsRoutes);
 app.use('/api/channels', channelsRoutes);
 app.use('/api/templates', templatesRoutes);
 
+app.get('/api/bot-info', async (req, res) => {
+  try {
+    const info = await bot.telegram.getMe();
+    res.json({
+      id: info.id,
+      first_name: info.first_name,
+      username: info.username,
+      connected: true
+    });
+  } catch (error) {
+    res.status(500).json({ connected: false, error: error.message });
+  }
+});
+
 // AI Routes placeholder
 app.post('/api/ai/improve', (req, res) => res.status(501).json({ error: 'AI not implemented' }));
 

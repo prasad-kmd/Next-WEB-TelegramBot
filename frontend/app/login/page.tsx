@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
 import TelegramLoginWidget from '@/components/TelegramLoginWidget';
 import api from '@/lib/api';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -58,31 +60,51 @@ export default function LoginPage() {
   const botUsername = process.env.NEXT_PUBLIC_BOT_USERNAME || 'YourBotUsername';
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 p-4">
-      <div className="grid w-full max-w-4xl grid-cols-1 overflow-hidden rounded-xl bg-white shadow-2xl md:grid-cols-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4 font-sans">
+      <div className="grid w-full max-w-4xl grid-cols-1 overflow-hidden rounded-2xl bg-card border shadow-2xl md:grid-cols-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
         {/* Left Panel - Branding */}
-        <div className="hidden flex-col justify-between bg-zinc-900 p-10 text-white md:flex">
-          <div>
-            <div className="flex items-center gap-2 text-xl font-bold">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600">P</div>
-              Post Maker Bot
+        <div className="relative hidden flex-col justify-between p-10 text-white md:flex overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/hero/posts.webp"
+              alt="Background"
+              fill
+              className="object-cover opacity-60 grayscale hover:grayscale-0 transition-all duration-700"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-zinc-900/90 to-zinc-900/60" />
+          </div>
+
+          <div className="relative z-10">
+            <div className="flex items-center gap-3 text-2xl font-mozilla-headline font-bold">
+              <Image src="/images/favicon/TG-post-bot-prasadm-32.png" alt="Logo" width={40} height={40} className="h-10 w-10" />
+              Telegram Post Maker
             </div>
-            <p className="mt-4 text-zinc-400">
-              Compose, schedule and manage your Telegram posts with ease.
+            <p className="mt-6 text-lg font-mozilla-text text-zinc-300 leading-relaxed">
+              Elevate your Telegram presence with precision scheduling and visual composition.
             </p>
           </div>
-          <div className="space-y-4">
-            <blockquote className="space-y-2">
-              <p className="text-lg">
-                "This tool has completely changed how I manage my Telegram channels. Scheduling is a breeze!"
+
+          <div className="relative z-10 space-y-6">
+            <blockquote className="space-y-2 border-l-4 border-primary pl-4">
+              <p className="text-lg font-mozilla-text italic">
+                "The ultimate tool for managing my broadcasting channels. Efficiency at its finest."
               </p>
-              <footer className="text-sm text-zinc-500">— Alex, Content Manager</footer>
+              <footer className="text-sm font-google-sans text-zinc-400">— PRASADM, Lead Developer</footer>
             </blockquote>
+
+            <div className="flex flex-wrap gap-4 text-xs font-google-sans text-zinc-500">
+              <Link href="/about" className="hover:text-white transition-colors">About</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+              <Link href="/privacy" className="hover:text-white transition-colors">Privacy</Link>
+              <Link href="/terms" className="hover:text-white transition-colors">Terms</Link>
+              <Link href="/disclaimer" className="hover:text-white transition-colors">Disclaimer</Link>
+            </div>
           </div>
         </div>
 
         {/* Right Panel - Forms */}
-        <div className="p-8 md:p-12">
+        <div className="p-8 md:p-12 bg-card">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
               <h1 className="text-2xl font-semibold tracking-tight">Welcome back</h1>
@@ -102,7 +124,7 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col items-center justify-center py-2 opacity-50 grayscale pointer-events-none">
+              <div className="flex flex-col items-center justify-center py-2">
                 <TelegramLoginWidget botUsername={botUsername} onAuth={handleTelegramAuth} />
               </div>
 
@@ -111,7 +133,7 @@ export default function LoginPage() {
                   <span className="w-full border-t" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-white px-2 text-muted-foreground">
+                  <span className="bg-card px-2 text-muted-foreground font-google-sans">
                     ── or sign in with email ──
                   </span>
                 </div>
