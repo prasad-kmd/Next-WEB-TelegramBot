@@ -10,6 +10,7 @@ const postSchema = new mongoose.Schema({
     file_id: String,
     file_type: String
   },
+  linkPreview: { type: Boolean, default: true },
   linkPreviewOptions: { type: Object },
   pinMessage: { type: Boolean, default: false },
   silentSend: { type: Boolean, default: false },

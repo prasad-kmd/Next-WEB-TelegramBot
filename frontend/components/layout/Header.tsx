@@ -42,7 +42,10 @@ export default function Header() {
 
   useEffect(() => {
     // Mocking bot status or could be an actual endpoint
-    setBotInfo({ username: 'PostMakerBot', connected: true });
+    const timer = requestAnimationFrame(() => {
+      setBotInfo({ username: 'PostMakerBot', connected: true });
+    });
+    return () => cancelAnimationFrame(timer);
   }, []);
 
   const getBreadcrumbs = () => {

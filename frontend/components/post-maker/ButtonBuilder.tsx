@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, X, GripVertical } from 'lucide-react';
+import { Plus, X, MousePointer2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface InlineButton {
   text: string;
@@ -43,50 +43,67 @@ export default function ButtonBuilder({ rows, onChange }: Props) {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium">Inline Keyboard</label>
-        <Button variant="outline" size="sm" onClick={addRow}>
-          <Plus size={14} className="mr-2" /> Add Row
+        <div className="flex items-center gap-2">
+           <MousePointer2 size={14} className="text-muted-foreground" />
+           <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground google-sans">Inline Keyboard API</span>
+        </div>
+        <Button variant="ghost" size="sm" onClick={addRow} className="h-8 rounded-lg text-[10px] font-bold uppercase tracking-widest hover:bg-primary/10 hover:text-primary">
+          <Plus size={12} className="mr-2" /> Add Row
         </Button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         {rows.map((row, rowIndex) => (
-          <div key={rowIndex} className="p-3 border rounded-lg bg-gray-50 space-y-2">
-            <div className="flex flex-wrap gap-2">
+          <div key={rowIndex} className="p-4 rounded-2xl border border-border/50 bg-muted/10 space-y-4 relative group">
+            <div className="flex flex-wrap gap-4">
               {row.map((btn, btnIndex) => (
-                <div key={btnIndex} className="bg-white p-2 border rounded shadow-sm w-full sm:w-[calc(50%-4px)] space-y-2 relative group">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute -top-2 -right-2 h-5 w-5 rounded-full bg-red-100 text-red-600 border border-red-200 hidden group-hover:flex"
+                <div key={btnIndex} className="bg-card p-4 rounded-xl border border-border/50 shadow-sm w-full sm:w-[calc(50%-8px)] space-y-3 relative group/btn hover:border-primary/30 transition-all">
+                  <button
+                    className="absolute -top-2 -right-2 h-6 w-6 rounded-full bg-destructive text-destructive-foreground shadow-lg flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity z-10"
                     onClick={() => removeButton(rowIndex, btnIndex)}
                   >
                     <X size={12} />
-                  </Button>
-                  <Input
-                    placeholder="Button Text"
-                    value={btn.text}
-                    onChange={(e) => updateButton(rowIndex, btnIndex, 'text', e.target.value)}
-                    className="h-8 text-xs"
-                  />
-                  <Input
-                    placeholder="URL"
-                    value={btn.url}
-                    onChange={(e) => updateButton(rowIndex, btnIndex, 'url', e.target.value)}
-                    className="h-8 text-xs"
-                  />
+                  </button>
+                  <div className="space-y-1.5">
+                     <label className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground google-sans ml-1">Label Text</label>
+                     <Input
+                        placeholder="Button Text"
+                        value={btn.text}
+                        onChange={(e) => updateButton(rowIndex, btnIndex, 'text', e.target.value)}
+                        className="h-9 text-xs rounded-lg bg-muted/30 border-none font-bold google-sans"
+                     />
+                  </div>
+                  <div className="space-y-1.5">
+                     <label className="text-[8px] font-bold uppercase tracking-widest text-muted-foreground google-sans ml-1">Destination URL</label>
+                     <Input
+                        placeholder="URL"
+                        value={btn.url}
+                        onChange={(e) => updateButton(rowIndex, btnIndex, 'url', e.target.value)}
+                        className="h-9 text-xs rounded-lg bg-muted/30 border-none font-mono"
+                     />
+                  </div>
                 </div>
               ))}
               {row.length < 5 && (
-                <Button variant="ghost" size="sm" className="h-auto py-2 border-dashed border-2" onClick={() => addButton(rowIndex)}>
-                  <Plus size={14} />
-                </Button>
+                <button
+                  className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-border/50 hover:border-primary/30 hover:bg-primary/5 transition-all w-full sm:w-[calc(50%-8px)] min-h-[110px]"
+                  onClick={() => addButton(rowIndex)}
+                >
+                  <Plus size={20} className="text-muted-foreground" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Add to row</span>
+                </button>
               )}
             </div>
           </div>
         ))}
+
+        {rows.length === 0 && (
+           <div className="text-center py-8 px-4 rounded-2xl border border-dashed border-border/50 bg-muted/5">
+              <p className="text-xs text-muted-foreground google-sans italic">No interactive buttons configured.</p>
+           </div>
+        )}
       </div>
     </div>
   );
