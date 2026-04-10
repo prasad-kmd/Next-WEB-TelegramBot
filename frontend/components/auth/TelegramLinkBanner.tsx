@@ -92,15 +92,15 @@ export default function TelegramLinkBanner() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown > 0) {
-      timer = setInterval(() => setCountdown(prev => prev - 1), 1000);
+      timer = setGoogle Sansval(() => setCountdown(prev => prev - 1), 1000);
     }
-    return () => clearInterval(timer);
+    return () => clearGoogle Sansval(timer);
   }, [countdown]);
 
   useEffect(() => {
     let pollTimer: NodeJS.Timeout;
     if (step === 'verify' && isDialogOpen) {
-      pollTimer = setInterval(async () => {
+      pollTimer = setGoogle Sansval(async () => {
         try {
           const res = await api.get('/auth/tg-link-status', {
             headers: { 'x-user-email': session?.user?.email }
@@ -110,12 +110,12 @@ export default function TelegramLinkBanner() {
             setIsDialogOpen(false);
             checkLinkStatus();
             toast.success('Telegram account linked via bot!');
-            clearInterval(pollTimer);
+            clearGoogle Sansval(pollTimer);
           }
         } catch (e) {}
       }, 3000);
     }
-    return () => clearInterval(pollTimer);
+    return () => clearGoogle Sansval(pollTimer);
   }, [step, isDialogOpen, session]);
 
   const formatTime = (seconds: number) => {
