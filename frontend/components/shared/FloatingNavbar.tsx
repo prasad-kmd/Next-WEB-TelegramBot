@@ -117,7 +117,7 @@ export function FloatingNavbar({
       <div className="flex items-center gap-1">
         {navItems.map((item) =>
           item.href ? (
-            <Tooltip key={item.label} delayDuration={0}>
+            <Tooltip key={item.label}>
               <TooltipTrigger>
                 <Link
                   href={item.href}
@@ -134,7 +134,7 @@ export function FloatingNavbar({
               )}
             </Tooltip>
           ) : (
-            <Tooltip key={item.label} delayDuration={0}>
+            <Tooltip key={item.label}>
               <TooltipTrigger>
                 <button
                   onClick={item.onClick}
@@ -157,7 +157,7 @@ export function FloatingNavbar({
       <div className="h-5 w-[1px] bg-border mx-2" />
 
       <div className="flex items-center gap-1">
-        <Tooltip delayDuration={0}>
+        <Tooltip>
           <TooltipTrigger>
             <button
               onClick={toggleTheme}
@@ -178,7 +178,7 @@ export function FloatingNavbar({
           )}
         </Tooltip>
 
-        <Tooltip delayDuration={0}>
+        <Tooltip>
           <TooltipTrigger>
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
