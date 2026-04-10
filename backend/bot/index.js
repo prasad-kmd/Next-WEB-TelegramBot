@@ -1,7 +1,30 @@
 const { Telegraf } = require('telegraf');
 const PendingMedia = require('../models/PendingMedia');
+const TgLinkRequest = require('../models/TgLinkRequest');
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
+
+bot.action(/tg_confirm:(.+)/, async (ctx) => {
+  const code = ctx.match[1];
+  const request = await TgLinkRequest.findOne({ code, expiresAt: { $gt: new Date() } });
+
+  if (request) {
+    request.confirmed = true;
+    request.answeredAt = new Date();
+    await request.save();
+    await ctx.answerCbQuery('✅ Confirmed! You can return to the app.');
+    await ctx.editMessageText(`✅ Linked to email: ${request.email}`);
+  } else {
+    await ctx.answerCbQuery('❌ Request expired or invalid.');
+  }
+});
+
+bot.action(/tg_deny:(.+)/, async (ctx) => {
+  const code = ctx.match[1];
+  await TgLinkRequest.deleteOne({ code });
+  await ctx.answerCbQuery('❌ Request denied.');
+  await ctx.editMessageText('❌ Request denied.');
+});
 
 bot.on('message', async (ctx, next) => {
   const message = ctx.message;
