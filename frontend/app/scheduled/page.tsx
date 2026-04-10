@@ -17,10 +17,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent } from '@/components/ui/sheet';
 
 export default function ScheduledPage() {
   const [posts, setPosts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchPosts();
@@ -50,14 +52,25 @@ export default function ScheduledPage() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">
-      <Sidebar />
+      {/* Desktop Sidebar */}
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="left" className="w-64 p-0">
+          <Sidebar />
+        </SheetContent>
+      </Sheet>
+
       <div className="flex flex-1 flex-col overflow-hidden">
-        <Header />
-        <main className="flex-1 overflow-y-auto p-8">
+        <Header onMenuClick={() => setMobileMenuOpen(true)} />
+        <main className="flex-1 overflow-y-auto p-4 md:p-8">
           <div className="mx-auto max-w-6xl">
             <header className="mb-8">
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Scheduled Posts</h1>
-              <p className="text-muted-foreground">Manage and track your upcoming Telegram content</p>
+              <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground font-heading">Scheduled Posts</h1>
+              <p className="text-muted-foreground font-body">Manage and track your upcoming Telegram content</p>
             </header>
 
             {loading ? (
@@ -80,7 +93,7 @@ export default function ScheduledPage() {
                   <Card key={post._id} className="flex flex-col">
                     <CardHeader className="pb-3">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-xs font-medium text-blue-600">
+                        <div className="flex items-center gap-2 text-xs font-medium text-blue-600 dark:text-blue-400">
                           <Clock size={14} />
                           {format(new Date(post.scheduledAt), 'PPP p')}
                         </div>
@@ -91,7 +104,7 @@ export default function ScheduledPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem className="text-red-600" onClick={() => cancelPost(post._id)}>
+                            <DropdownMenuItem className="text-red-600 dark:text-red-400" onClick={() => cancelPost(post._id)}>
                               <Trash2 className="mr-2 h-4 w-4" /> Cancel Post
                             </DropdownMenuItem>
                           </DropdownMenuContent>
@@ -127,8 +140,8 @@ export default function ScheduledPage() {
             {!loading && posts.length === 0 && (
               <div className="flex flex-col items-center justify-center py-20 bg-card border border-dashed rounded-xl text-muted-foreground">
                 <CalendarIcon size={48} className="mb-4 opacity-20" />
-                <p className="text-lg font-medium">No scheduled posts found.</p>
-                <p className="text-sm mb-6">You haven't scheduled any posts yet.</p>
+                <p className="text-lg font-medium font-heading">No scheduled posts found.</p>
+                <p className="text-sm mb-6 font-body">You haven't scheduled any posts yet.</p>
                 <Button variant="outline" onClick={() => window.location.href = '/'}>
                   Create New Post
                 </Button>
