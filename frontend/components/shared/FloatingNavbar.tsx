@@ -118,7 +118,7 @@ export function FloatingNavbar({
         {navItems.map((item) =>
           item.href ? (
             <Tooltip key={item.label} delayDuration={0}>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 <Link
                   href={item.href}
                   className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300 relative group"
@@ -135,7 +135,7 @@ export function FloatingNavbar({
             </Tooltip>
           ) : (
             <Tooltip key={item.label} delayDuration={0}>
-              <TooltipTrigger asChild>
+              <TooltipTrigger>
                 <button
                   onClick={item.onClick}
                   className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300 relative group"
@@ -158,7 +158,7 @@ export function FloatingNavbar({
 
       <div className="flex items-center gap-1">
         <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
+          <TooltipTrigger>
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-all duration-300 relative group"
@@ -179,7 +179,7 @@ export function FloatingNavbar({
         </Tooltip>
 
         <Tooltip delayDuration={0}>
-          <TooltipTrigger asChild>
+          <TooltipTrigger>
             <button
               onClick={() => signOut({ callbackUrl: '/login' })}
               className="p-2 rounded-full hover:bg-red-500/10 text-red-500 transition-all duration-300 relative group"

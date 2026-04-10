@@ -86,7 +86,7 @@ export default function Header() {
 
       <div className="flex items-center gap-4">
         <Tooltip>
-          <TooltipTrigger asChild>
+          <TooltipTrigger>
             <div className="flex items-center gap-2 cursor-help">
               <div className={cn(
                 "h-2 w-2 rounded-full shadow-[0_0_8px]",
@@ -101,7 +101,7 @@ export default function Header() {
         </Tooltip>
 
         <HoverCard >
-          <HoverCardTrigger asChild>
+          <HoverCardTrigger>
             <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8 border border-primary/20">
                 <AvatarImage src="" alt={session?.user?.name || "User"} />

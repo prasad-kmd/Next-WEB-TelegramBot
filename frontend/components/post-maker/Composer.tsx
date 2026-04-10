@@ -113,7 +113,7 @@ export default function Composer() {
             <CardContent>
               <div className="space-y-4">
                 <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger>
                     <Button
                       variant="outline"
                       role="combobox"
@@ -273,7 +273,7 @@ export default function Composer() {
             <div className="space-y-3">
               <Label className="text-xs uppercase tracking-widest opacity-50 font-jetbrains-mono">Scheduled Release</Label>
               <Popover>
-                <PopoverTrigger asChild>
+                <PopoverTrigger>
                   <Button variant="outline" className="w-full h-12 justify-start text-left font-normal bg-background border-primary/10 hover:border-primary/30 transition-all rounded-xl">
                     <CalendarIcon className="mr-3 h-4 w-4 text-primary" />
                     <span className="font-google-sans">{scheduledAt ? format(scheduledAt, 'PPP p') : <span>Pick a date</span>}</span>
