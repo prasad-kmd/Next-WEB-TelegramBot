@@ -5,12 +5,13 @@ const auth = require('../middleware/auth');
 const bot = require('../bot');
 
 const sendPost = async (chatId, post) => {
-  const { message, media, replyMarkup, parseMode, pinMessage, silentSend, protectContent } = post;
+  const { message, media, replyMarkup, parseMode, pinMessage, silentSend, protectContent, linkPreview } = post;
   const extra = {
     parse_mode: parseMode || 'HTML',
     reply_markup: replyMarkup,
     disable_notification: silentSend,
-    protect_content: protectContent
+    protect_content: protectContent,
+    link_preview_options: linkPreview !== undefined ? { is_disabled: !linkPreview } : undefined
   };
 
   let sentMessage;

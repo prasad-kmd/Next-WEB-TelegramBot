@@ -5,6 +5,10 @@ import { getToken } from 'next-auth/jwt';
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
+  // Define public routes
+  const publicRoutes = ['/login', '/privacy', '/disclaimer', '/terms', '/about', '/contact'];
+  const isPublicRoute = publicRoutes.some(route => path.startsWith(route));
+
   // Check for NextAuth session token
   const nextAuthToken = await getToken({
     req: request,
@@ -16,11 +20,11 @@ export async function middleware(request: NextRequest) {
 
   const isAuthenticated = !!nextAuthToken || !!tgToken;
 
-  if (!isAuthenticated && !path.startsWith('/login')) {
+  if (!isAuthenticated && !isPublicRoute) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (isAuthenticated && path.startsWith('/login')) {
+  if (isAuthenticated && path === '/login') {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -28,5 +32,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|images|fonts).*)'],
 };

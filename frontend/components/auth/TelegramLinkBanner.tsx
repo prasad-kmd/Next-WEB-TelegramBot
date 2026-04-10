@@ -199,7 +199,7 @@ export default function TelegramLinkBanner() {
               </Button>
               {canResend && (
                 <Button variant="link" className="w-full text-xs" onClick={() => setStep('input')}>
-                  Didn't get a code? Try again
+                  Didn&apos;t get a code? Try again
                 </Button>
               )}
             </div>

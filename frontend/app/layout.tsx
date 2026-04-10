@@ -1,20 +1,15 @@
 import { TooltipProvider } from "@/components/ui/tooltip"
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { SidebarProvider } from "@/components/providers/SidebarProvider";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/layout/CommandPalette";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ConnectivityListener } from "@/components/layout/ConnectivityListener";
+import { CustomContextMenu } from "@/components/layout/CustomContextMenu";
+import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import { ClickSpark } from "@/components/layout/ClickSpark";
 
 export const metadata: Metadata = {
   title: "Telegram Post Maker",
@@ -28,13 +23,35 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className="antialiased font-sans">
         <AuthProvider>
-          <TooltipProvider>
-            {children}
-            <CommandPalette />
-            <Toaster position="top-right" richColors />
-          </TooltipProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SidebarProvider>
+              <TooltipProvider delayDuration={0}>
+                <ClickSpark
+                  sparkColor="var(--primary)"
+                  sparkSize={10}
+                  sparkRadius={15}
+                  sparkCount={8}
+                  duration={400}
+                >
+                  <div className="min-h-screen">
+                    {children}
+                  </div>
+                </ClickSpark>
+                <CommandPalette />
+                <Toaster position="top-right" richColors />
+                <ConnectivityListener />
+                <CustomContextMenu />
+                <ScrollToTop />
+              </TooltipProvider>
+            </SidebarProvider>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
