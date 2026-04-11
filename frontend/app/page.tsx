@@ -2,6 +2,9 @@
 
 import { Suspense } from "react";
 import TelegramLinkBanner from "@/components/auth/TelegramLinkBanner";
+import Composer from "@/components/post-maker/Composer";
+import { PageLayout } from "@/components/layout/PageLayout";
+import { Loader2 } from "lucide-react";
 function HomeContent() {
   return (
     <>
