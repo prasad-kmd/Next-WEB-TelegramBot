@@ -17,7 +17,7 @@ export function PageLayout({ children, className, isPublic = false }: PageLayout
         "flex flex-col flex-1 transition-all duration-300 ease-in-out",
         !isPublic && "lg:ml-[var(--sidebar-width)]"
       )}>
-        {!isPublic && <FloatingNavbar />}
+        {!isPublic && <FloatingNavbar className="hidden lg:flex" />}
         <main className={cn("flex-1 px-4 py-8 md:px-8 lg:px-12", className)}>
           <div className="mx-auto max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-500">
             {children}

@@ -125,30 +125,30 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
       <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
         <div className="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
           <TabsList className="bg-muted/50 p-1 h-9 rounded-lg">
-            <TabsTrigger value="visual" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Preview</TabsTrigger>
-            <TabsTrigger value="raw" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Raw View</TabsTrigger>
+            <TabsTrigger value="visual" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Default Editor</TabsTrigger>
+            <TabsTrigger value="raw" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Preview</TabsTrigger>
           </TabsList>
-
-          {view === 'visual' && (
-            <div className="flex items-center gap-1">
-              {toolbarItems.map((item) => (
-                <Tooltip key={item.label}>
-                  <TooltipTrigger>
-                    <Toggle
-                      size="sm"
-                      pressed={editor.isActive(item.active)}
-                      onPressedChange={item.action}
-                      className="h-8 w-8 p-0 rounded-lg hover:bg-primary/10 hover:text-primary data-[state=on]:bg-primary/20 data-[state=on]:text-primary"
-                    >
-                      <item.icon className="h-4 w-4" />
-                    </Toggle>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" className="font-bold">{item.label}</TooltipContent>
-                </Tooltip>
-              ))}
-            </div>
-          )}
         </div>
+
+        {view === 'visual' && (
+          <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-4 py-2 overflow-x-auto scrollbar-none">
+            {toolbarItems.map((item) => (
+              <Tooltip key={item.label}>
+                <TooltipTrigger asChild>
+                  <Toggle
+                    size="sm"
+                    pressed={editor.isActive(item.active)}
+                    onPressedChange={item.action}
+                    className="h-8 w-8 p-0 rounded-lg hover:bg-primary/10 hover:text-primary data-[state=on]:bg-primary/20 data-[state=on]:text-primary shrink-0"
+                  >
+                    <item.icon className="h-4 w-4" />
+                  </Toggle>
+                </TooltipTrigger>
+                <TooltipContent side="top" className="font-bold">{item.label}</TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+        )}
 
         <TabsContent value="visual" className="mt-0 outline-none">
           <EditorContent editor={editor} />

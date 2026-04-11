@@ -30,6 +30,15 @@ mongoose.connect(process.env.MONGODB_URI)
   .catch(err => console.error('MongoDB Connection Error:', err));
 
 // Routes
+app.get('/api/bot-info', async (req, res) => {
+  try {
+    const me = await bot.telegram.getMe();
+    res.json(me);
+  } catch (err) {
+    res.status(500).json({ error: 'Could not fetch bot info' });
+  }
+});
+
 app.use('/auth', authRoutes);
 app.use('/api/auth', authLinkRoutes);
 app.use('/api/media', mediaRoutes);

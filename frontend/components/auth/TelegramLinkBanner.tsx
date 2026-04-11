@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -18,6 +19,8 @@ import { toast } from 'sonner';
 
 export default function TelegramLinkBanner() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [isLinked, setIsLinked] = useState<boolean | null>(null);
   const [linkedUsername, setLinkedUsername] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -33,6 +36,17 @@ export default function TelegramLinkBanner() {
       checkLinkStatus();
     }
   }, [session]);
+
+  useEffect(() => {
+    if (searchParams.get('link') === 'true' && isLinked === false) {
+      setIsDialogOpen(true);
+      // Clean up the URL
+      const newParams = new URLSearchParams(searchParams.toString());
+      newParams.delete('link');
+      const queryString = newParams.toString();
+      router.replace(queryString ? `?${queryString}` : '/');
+    }
+  }, [searchParams, isLinked, router]);
 
   const checkLinkStatus = async () => {
     try {

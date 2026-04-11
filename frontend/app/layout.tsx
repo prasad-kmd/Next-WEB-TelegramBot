@@ -14,6 +14,18 @@ import { ClickSpark } from "@/components/layout/ClickSpark";
 export const metadata: Metadata = {
   title: "Telegram Post Maker",
   description: "Compose and schedule Telegram posts visually",
+  icons: {
+    icon: [
+      { url: "/images/favicon/TG-post-bot-prasadm-16.png", sizes: "16x16", type: "image/png" },
+      { url: "/images/favicon/TG-post-bot-prasadm-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/images/favicon/TG-post-bot-prasadm-48.png", sizes: "48x48", type: "image/png" },
+      { url: "/images/favicon/TG-post-bot-prasadm-96.png", sizes: "96x96", type: "image/png" },
+      { url: "/images/favicon/TG-post-bot-prasadm-128.png", sizes: "128x128", type: "image/png" },
+    ],
+    apple: [
+      { url: "/images/favicon/TG-post-bot-prasadm-512.png" },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -45,7 +57,7 @@ export default function RootLayout({
                   </div>
                 </ClickSpark>
                 <CommandPalette />
-                <Toaster position="top-right" richColors />
+                <Toaster position="bottom-right" richColors />
                 <ConnectivityListener />
                 <CustomContextMenu />
                 <ScrollToTop />

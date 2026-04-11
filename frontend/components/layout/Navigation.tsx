@@ -15,12 +15,15 @@ import {
   ShieldCheck,
   FileWarning,
   Contact,
+  LogOut,
 } from "lucide-react";
 import { useState } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useSidebar } from "@/components/providers/SidebarProvider";
 import { FloatingNavbar } from "./FloatingNavbar";
+import { signOut, useSession } from 'next-auth/react';
+import api from '@/lib/api';
 import {
   Tooltip,
   TooltipContent,
@@ -45,6 +48,16 @@ export function Navigation() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { isCollapsed, toggleSidebar } = useSidebar();
+  const { data: session } = useSession();
+
+  const handleLogout = async () => {
+    if (session) {
+      await signOut({ callbackUrl: '/login' });
+    } else {
+      await api.post('/auth/logout');
+      window.location.href = '/login';
+    }
+  };
 
   const renderNavItem = (item: {
     name: string;
@@ -192,6 +205,37 @@ export function Navigation() {
             {primaryNav.map(renderNavItem)}
             <hr className="my-2 border-border" />
             {secondaryNav.map(renderNavItem)}
+            <hr className="my-2 border-border" />
+            <Tooltip delayDuration={0}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleLogout}
+                  className={cn(
+                    "flex w-full items-center rounded-lg px-3 py-2 text-sm font-medium transition-all gap-3 relative group local-jetbrains-mono text-destructive hover:bg-destructive/10",
+                    isCollapsed
+                      ? "lg:justify-center lg:px-2 lg:gap-0"
+                      : "justify-start",
+                  )}
+                >
+                  <LogOut className="h-5 w-5 shrink-0" />
+                  <span
+                    className={cn(
+                      "transition-opacity duration-300",
+                      isCollapsed
+                        ? "lg:opacity-0 lg:w-0 lg:overflow-hidden"
+                        : "opacity-100",
+                    )}
+                  >
+                    Logout
+                  </span>
+                </button>
+              </TooltipTrigger>
+              {isCollapsed && (
+                <TooltipContent side="right" className="ml-2">
+                  Logout
+                </TooltipContent>
+              )}
+            </Tooltip>
           </nav>
 
           {/* Footer */}

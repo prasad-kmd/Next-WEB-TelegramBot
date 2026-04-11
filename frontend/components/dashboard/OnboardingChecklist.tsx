@@ -42,7 +42,7 @@ export default function OnboardingChecklist() {
 
   const steps = [
     { id: 1, title: 'Add a channel', completed: channels.length > 0, href: '/settings' },
-    { id: 2, title: 'Link Telegram', completed: isLinked, href: '/' },
+    { id: 2, title: 'Link Telegram', completed: isLinked, href: '/?link=true' },
     { id: 3, title: 'Send your first post', completed: hasPosted, href: '/' },
   ];
 
@@ -61,9 +61,10 @@ export default function OnboardingChecklist() {
       <CardContent>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
           {steps.map((step) => (
-            <div
+            <Link
               key={step.id}
-              className={`flex items-center gap-3 p-3 rounded-lg border bg-background transition-all ${
+              href={step.href}
+              className={`flex items-center gap-3 p-3 rounded-lg border bg-background transition-all hover:border-primary/50 ${
                 step.completed ? 'opacity-60 grayscale' : 'border-blue-200 shadow-sm'
               }`}
             >
@@ -80,7 +81,7 @@ export default function OnboardingChecklist() {
               {!step.completed && (
                 <ArrowRight className="h-4 w-4 text-blue-400 shrink-0" />
               )}
-            </div>
+            </Link>
           ))}
         </div>
       </CardContent>

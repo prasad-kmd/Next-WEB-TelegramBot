@@ -115,8 +115,8 @@ export default function Composer() {
   }, [media, linkPreview]);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pb-32">
-      <div className="lg:col-span-7 space-y-8">
+    <div className="max-w-4xl mx-auto pb-32">
+      <div className="space-y-8">
         <Card className="rounded-2xl border-border/50 bg-card shadow-sm overflow-hidden">
           <CardHeader className="bg-muted/30 border-b border-border/50">
             <CardTitle className="text-lg mozilla-headline">Post Content</CardTitle>
@@ -193,6 +193,19 @@ export default function Composer() {
             <div className="space-y-3">
                <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground google-sans ml-1">Message Body</label>
                <PostEditor content={content} onChange={setContent} charLimit={charLimit} />
+               <Card className="rounded-2xl border-border/50 bg-primary/5 p-4 mt-4">
+                  <div className="flex gap-4">
+                     <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                        <Info size={16} />
+                     </div>
+                     <div className="space-y-1">
+                        <p className="text-xs font-bold google-sans">Telegram Protocol Notice</p>
+                        <p className="text-[10px] text-muted-foreground leading-relaxed google-sans">
+                          Your message will be formatted according to Telegram&apos;s HTML entities. Media captions are limited to 1024 characters.
+                        </p>
+                     </div>
+                  </div>
+               </Card>
             </div>
 
             <div className="space-y-3">
@@ -208,29 +221,6 @@ export default function Composer() {
         </Card>
       </div>
 
-      <div className="lg:col-span-5 hidden lg:block">
-        <div className="sticky top-24 space-y-6">
-           <div className="flex items-center gap-2 mb-2 ml-1">
-              <div className="h-2 w-2 rounded-full bg-primary" />
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground google-sans">Live Simulation</span>
-           </div>
-           <PostPreview content={content} media={media || undefined} buttons={buttons} linkPreview={linkPreview} />
-
-           <Card className="rounded-2xl border-border/50 bg-primary/5 p-6">
-              <div className="flex gap-4">
-                 <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                    <Info size={20} />
-                 </div>
-                 <div className="space-y-1">
-                    <p className="text-sm font-bold google-sans">Telegram Protocol Notice</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed google-sans">
-                      Your message will be formatted according to Telegram&apos;s HTML entities. Media captions are limited to 1024 characters.
-                    </p>
-                 </div>
-              </div>
-           </Card>
-        </div>
-      </div>
 
       {/* Sticky Bottom Actions Bar */}
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-8 duration-500">

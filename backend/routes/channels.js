@@ -16,7 +16,12 @@ router.get('/', auth, async (req, res) => {
 router.post('/', auth, async (req, res) => {
   const { channelId } = req.body;
   try {
-    const chat = await bot.telegram.getChat(channelId);
+    // Ensure channelId starts with @ or is a numeric ID
+    const formattedId = (channelId.startsWith('@') || channelId.startsWith('-'))
+      ? channelId
+      : `@${channelId}`;
+
+    const chat = await bot.telegram.getChat(formattedId);
     const channel = new Channel({
       userId: req.user.id.toString(),
       channelId: chat.id.toString(),
@@ -25,7 +30,8 @@ router.post('/', auth, async (req, res) => {
     await channel.save();
     res.json(channel);
   } catch (err) {
-    res.status(500).json({ error: 'Could not find channel or bot is not a member.' });
+    console.error('Error adding channel:', err);
+    res.status(500).json({ error: 'Could not add channel. Make sure the bot is an admin and the ID/Username is correct.' });
   }
 });
 

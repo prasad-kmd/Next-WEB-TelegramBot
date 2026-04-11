@@ -1,11 +1,13 @@
 "use client";
 
 import { useTheme } from "next-themes";
-import { Sun, Moon, Share2, LayoutGrid } from "lucide-react";
+import { Sun, Moon, Share2, LayoutGrid, LogOut } from "lucide-react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { signOut, useSession } from 'next-auth/react';
+import api from '@/lib/api';
 import {
   Tooltip,
   TooltipContent,
@@ -24,6 +26,7 @@ export function FloatingNavbar({
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [copied, setCopied] = useState(false);
+  const { data: session } = useSession();
 
   // Avoid hydration mismatch
   useEffect(() => {
@@ -37,6 +40,15 @@ export function FloatingNavbar({
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
+  };
+
+  const handleLogout = async () => {
+    if (session) {
+      await signOut({ callbackUrl: '/login' });
+    } else {
+      await api.post('/auth/logout');
+      window.location.href = '/login';
+    }
   };
 
   const handleShare = async () => {
@@ -76,6 +88,12 @@ export function FloatingNavbar({
       label: copied ? "Copied!" : "Share",
       onClick: handleShare,
     },
+    {
+      icon: LogOut,
+      label: "Logout",
+      onClick: handleLogout,
+      className: "text-destructive hover:text-destructive hover:bg-destructive/10"
+    }
   ];
 
   return (
@@ -92,10 +110,13 @@ export function FloatingNavbar({
       {navItems.map((item) =>
         item.href ? (
           <Tooltip key={item.label} delayDuration={0}>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <Link
                 href={item.href}
-                className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors relative group google-sans"
+                className={cn(
+                  "p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors relative group google-sans",
+                  item.className
+                )}
                 aria-label={item.label}
               >
                 <item.icon className="h-5 w-5" />
@@ -109,10 +130,13 @@ export function FloatingNavbar({
           </Tooltip>
         ) : (
           <Tooltip key={item.label} delayDuration={0}>
-            <TooltipTrigger>
+            <TooltipTrigger asChild>
               <button
                 onClick={item.onClick}
-                className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors relative group google-sans"
+                className={cn(
+                  "p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors relative group google-sans",
+                  item.className
+                )}
                 aria-label={item.label}
               >
                 <item.icon className="h-5 w-5" />
@@ -128,7 +152,7 @@ export function FloatingNavbar({
       )}
       <hr className="h-4 w-[1px] bg-border mx-1" />
       <Tooltip delayDuration={0}>
-        <TooltipTrigger>
+        <TooltipTrigger asChild>
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors relative group google-sans"
