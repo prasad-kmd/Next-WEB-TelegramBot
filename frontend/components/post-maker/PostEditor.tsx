@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
-import Underline from '@tiptap/extension-underline';
-import Placeholder from '@tiptap/extension-placeholder';
-import Strike from '@tiptap/extension-strike';
-import Blockquote from '@tiptap/extension-blockquote';
-import CodeBlock from '@tiptap/extension-code-block';
-import { Spoiler } from '@/lib/tiptap-extensions/Spoiler';
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import Link from "@tiptap/extension-link";
+import Underline from "@tiptap/extension-underline";
+import Placeholder from "@tiptap/extension-placeholder";
+import Strike from "@tiptap/extension-strike";
+import Blockquote from "@tiptap/extension-blockquote";
+import CodeBlock from "@tiptap/extension-code-block";
+import { Spoiler } from "@/lib/tiptap-extensions/Spoiler";
 import {
   Bold,
   Italic,
@@ -22,28 +22,40 @@ import {
   Type,
   FileCode,
   Eye,
-  Hash
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Toggle } from '@/components/ui/toggle';
+  Hash,
+  AlertCircle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Toggle } from "@/components/ui/toggle";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useEffect, useState } from 'react';
-import { cn } from '@/lib/utils';
+} from "@/components/ui/tooltip";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import PostPreview from "./PostPreview";
 
 interface Props {
   content: string;
   onChange: (html: string) => void;
   charLimit?: number;
+  media?: any;
+  buttons?: any[][];
+  linkPreview?: boolean;
 }
 
-export default function PostEditor({ content, onChange, charLimit = 4096 }: Props) {
+export default function PostEditor({
+  content,
+  onChange,
+  charLimit = 4096,
+  media,
+  buttons,
+  linkPreview,
+}: Props) {
   const [charCount, setCharCount] = useState(0);
-  const [view, setView] = useState<'visual' | 'raw'>('visual');
+  const [view, setView] = useState<"visual" | "preview">("visual");
 
   const editor = useEditor({
     extensions: [
@@ -57,18 +69,18 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
       Blockquote,
       CodeBlock.configure({
         HTMLAttributes: {
-          class: 'tg-code-block',
+          class: "tg-code-block",
         },
       }),
       Spoiler,
       Link.configure({
         openOnClick: false,
         HTMLAttributes: {
-          class: 'tg-link',
+          class: "tg-link",
         },
       }),
       Placeholder.configure({
-        placeholder: 'Compose your Telegram message...',
+        placeholder: "Compose your Telegram message...",
       }),
     ],
     content,
@@ -79,7 +91,8 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
     },
     editorProps: {
       attributes: {
-        class: 'focus:outline-none min-h-[250px] p-6 prose prose-sm max-w-none dark:prose-invert google-sans text-lg leading-relaxed',
+        class:
+          "focus:outline-none min-h-[250px] p-6 prose prose-sm max-w-none dark:prose-invert google-sans text-lg leading-relaxed",
       },
     },
   });
@@ -93,44 +106,103 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
   if (!editor) return null;
 
   const setLink = () => {
-    const previousUrl = editor.getAttributes('link').href;
-    const url = window.prompt('URL', previousUrl);
+    const previousUrl = editor.getAttributes("link").href;
+    const url = window.prompt("URL", previousUrl);
 
     if (url === null) return;
-    if (url === '') {
-      editor.chain().focus().extendMarkRange('link').unsetLink().run();
+    if (url === "") {
+      editor.chain().focus().extendMarkRange("link").unsetLink().run();
       return;
     }
 
-    editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run();
+    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
   const toolbarItems = [
-    { icon: Bold, action: () => editor.chain().focus().toggleBold().run(), active: 'bold', label: 'Bold' },
-    { icon: Italic, action: () => editor.chain().focus().toggleItalic().run(), active: 'italic', label: 'Italic' },
-    { icon: UnderlineIcon, action: () => editor.chain().focus().toggleUnderline().run(), active: 'underline', label: 'Underline' },
-    { icon: Strikethrough, action: () => editor.chain().focus().toggleStrike().run(), active: 'strike', label: 'Strikethrough' },
-    { icon: Quote, action: () => editor.chain().focus().toggleBlockquote().run(), active: 'blockquote', label: 'Quote' },
-    { icon: Code, action: () => editor.chain().focus().toggleCode().run(), active: 'code', label: 'Monospace' },
-    { icon: FileCode, action: () => editor.chain().focus().toggleCodeBlock().run(), active: 'codeBlock', label: 'Code Block' },
-    { icon: EyeOff, action: () => editor.chain().focus().toggleMark('spoiler').run(), active: 'spoiler', label: 'Spoiler' },
-    { icon: LinkIcon, action: setLink, active: 'link', label: 'Link' },
+    {
+      icon: Bold,
+      action: () => editor.chain().focus().toggleBold().run(),
+      active: "bold",
+      label: "Bold",
+    },
+    {
+      icon: Italic,
+      action: () => editor.chain().focus().toggleItalic().run(),
+      active: "italic",
+      label: "Italic",
+    },
+    {
+      icon: UnderlineIcon,
+      action: () => editor.chain().focus().toggleUnderline().run(),
+      active: "underline",
+      label: "Underline",
+    },
+    {
+      icon: Strikethrough,
+      action: () => editor.chain().focus().toggleStrike().run(),
+      active: "strike",
+      label: "Strikethrough",
+    },
+    {
+      icon: Quote,
+      action: () => editor.chain().focus().toggleBlockquote().run(),
+      active: "blockquote",
+      label: "Quote",
+    },
+    {
+      icon: Code,
+      action: () => editor.chain().focus().toggleCode().run(),
+      active: "code",
+      label: "Monospace",
+    },
+    {
+      icon: FileCode,
+      action: () => editor.chain().focus().toggleCodeBlock().run(),
+      active: "codeBlock",
+      label: "Code Block",
+    },
+    {
+      icon: EyeOff,
+      action: () => editor.chain().focus().toggleMark("spoiler").run(),
+      active: "spoiler",
+      label: "Spoiler",
+    },
+    { icon: LinkIcon, action: setLink, active: "link", label: "Link" },
   ];
 
-  const progressColor = charCount > charLimit * 0.95 ? 'bg-destructive' : charCount > charLimit * 0.8 ? 'bg-amber-500' : 'bg-primary';
+  const progressColor =
+    charCount > charLimit * 0.95
+      ? "bg-destructive"
+      : charCount > charLimit * 0.8
+        ? "bg-amber-500"
+        : "bg-primary";
   const progressWidth = Math.min((charCount / charLimit) * 100, 100);
 
   return (
     <div className="flex flex-col rounded-2xl border border-border/50 bg-card shadow-xl overflow-hidden group transition-all focus-within:border-primary/50">
-      <Tabs value={view} onValueChange={(v) => setView(v as any)} className="w-full">
+      <Tabs
+        value={view}
+        onValueChange={(v) => setView(v as any)}
+        className="w-full"
+      >
         <div className="flex items-center justify-between border-b border-border/50 bg-muted/30 px-4 py-2">
           <TabsList className="bg-muted/50 p-1 h-9 rounded-lg">
-            <TabsTrigger value="visual" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Default Editor</TabsTrigger>
-            <TabsTrigger value="raw" className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background">Preview</TabsTrigger>
+            <TabsTrigger
+              value="visual"
+              className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background"
+            >
+              Editor
+            </TabsTrigger>
+            <TabsTrigger
+              value="preview"
+              className="text-[10px] font-bold uppercase tracking-widest px-4 rounded-md data-[state=active]:bg-background"
+            >
+              Preview
+            </TabsTrigger>
           </TabsList>
         </div>
 
-        {view === 'visual' && (
+        {view === "visual" && (
           <div className="flex items-center gap-1 border-b border-border/50 bg-muted/10 px-4 py-2 overflow-x-auto scrollbar-none">
             {toolbarItems.map((item) => (
               <Tooltip key={item.label}>
@@ -144,7 +216,9 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
                     <item.icon className="h-4 w-4" />
                   </Toggle>
                 </TooltipTrigger>
-                <TooltipContent side="top" className="font-bold">{item.label}</TooltipContent>
+                <TooltipContent side="top" className="font-bold">
+                  {item.label}
+                </TooltipContent>
               </Tooltip>
             ))}
           </div>
@@ -154,43 +228,53 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
           <EditorContent editor={editor} />
         </TabsContent>
 
-        <TabsContent value="raw" className="mt-0 outline-none">
-          <textarea
-            className="w-full min-h-[250px] p-6 font-mono text-sm bg-zinc-950 text-zinc-300 focus:outline-none resize-none"
-            value={content}
-            onChange={(e) => onChange(e.target.value)}
-            spellCheck={false}
+        <TabsContent
+          value="preview"
+          className="mt-0 outline-none p-6 bg-zinc-50 dark:bg-zinc-900/50 min-h-[300px] flex items-center justify-center"
+        >
+          <PostPreview
+            content={content}
+            media={media}
+            buttons={buttons}
+            linkPreview={linkPreview}
           />
         </TabsContent>
       </Tabs>
 
       <div className="mt-auto border-t border-border/50 px-6 py-3 flex items-center justify-between bg-muted/10">
         <div className="flex flex-col gap-1 flex-1 mr-8">
-           <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground google-sans">
-              <span>Memory Usage</span>
-              <span className={cn(charCount > charLimit ? "text-destructive" : "")}>
-                {charCount} / {charLimit} CHARS
-              </span>
-           </div>
-           <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-             <div
-               className={cn("h-full transition-all duration-500 ease-out rounded-full", progressColor)}
-               style={{ width: `${progressWidth}%` }}
-             />
-           </div>
+          <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.1em] text-muted-foreground google-sans">
+            <span>Memory Usage</span>
+            <span
+              className={cn(charCount > charLimit ? "text-destructive" : "")}
+            >
+              {charCount} / {charLimit} CHARS
+            </span>
+          </div>
+          <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+            <div
+              className={cn(
+                "h-full transition-all duration-500 ease-out rounded-full",
+                progressColor,
+              )}
+              style={{ width: `${progressWidth}%` }}
+            />
+          </div>
         </div>
 
         <div className="flex items-center gap-4">
-           {charCount > charLimit && (
-             <div className="flex items-center gap-2 text-destructive animate-pulse">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-[10px] font-bold uppercase tracking-widest">Limit Exceeded</span>
-             </div>
-           )}
-           <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-primary">
-              <Hash className="h-3 w-3" />
-              <span className="text-[10px] font-bold font-mono">{charCount}</span>
-           </div>
+          {charCount > charLimit && (
+            <div className="flex items-center gap-2 text-destructive animate-pulse">
+              <AlertCircle className="h-4 w-4" />
+              <span className="text-[10px] font-bold uppercase tracking-widest">
+                Limit Exceeded
+              </span>
+            </div>
+          )}
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-primary">
+            <Hash className="h-3 w-3" />
+            <span className="text-[10px] font-bold font-mono">{charCount}</span>
+          </div>
         </div>
       </div>
 
@@ -220,7 +304,7 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
           font-family: var(--font-jetbrains);
           font-size: 0.85em;
           margin: 1rem 0;
-          border: 1px solid rgba(255,255,255,0.1);
+          border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .tg-link {
           color: #3b82f6;
@@ -240,5 +324,3 @@ export default function PostEditor({ content, onChange, charLimit = 4096 }: Prop
     </div>
   );
 }
-
-import { AlertCircle } from 'lucide-react';
