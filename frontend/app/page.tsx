@@ -1,13 +1,15 @@
 'use client';
 
+import { Suspense } from 'react';
 import TelegramLinkBanner from '@/components/auth/TelegramLinkBanner';
 import OnboardingChecklist from '@/components/dashboard/OnboardingChecklist';
 import Composer from '@/components/post-maker/Composer';
 import { PageLayout } from '@/components/layout/PageLayout';
+import { Loader2 } from 'lucide-react';
 
-export default function Home() {
+function HomeContent() {
   return (
-    <PageLayout>
+    <>
       <TelegramLinkBanner />
       <OnboardingChecklist />
       <div className="mb-8 space-y-1">
@@ -15,6 +17,16 @@ export default function Home() {
         <p className="text-muted-foreground google-sans">Compose and schedule your Telegram content</p>
       </div>
       <Composer />
+    </>
+  );
+}
+
+export default function Home() {
+  return (
+    <PageLayout>
+      <Suspense fallback={<div className="flex justify-center p-12"><Loader2 className="animate-spin h-8 w-8 text-primary" /></div>}>
+        <HomeContent />
+      </Suspense>
     </PageLayout>
   );
 }
